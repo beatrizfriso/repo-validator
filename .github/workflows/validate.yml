@@ -26,3 +26,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG_NAME: ${{ secrets.ORG_NAME }}
         run: python scripts/validate.py
+
+      - name: Upload validation report
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-report
+          path: validation_report.md
