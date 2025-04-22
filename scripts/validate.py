@@ -13,6 +13,12 @@ headers = {
 def get_repositories():
     url = f"{GITHUB_API}/orgs/{ORG_NAME}/repos"
     response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"Erro ao acessar a API: {response.status_code}")
+        print(response.text)
+        return []
+
     return response.json()
 
 def validate_repo(repo):
@@ -25,7 +31,17 @@ def validate_repo(repo):
 
 def main():
     repos = get_repositories()
+
+    if not isinstance(repos, list):
+        print("❌ Erro ao buscar repositórios. Resposta inesperada da API:")
+        print(repos)
+        return
+
     for repo in repos:
+        if not isinstance(repo, dict):
+            print(f"⚠️ Repositório inesperado no formato: {type(repo)} — {repo}")
+            continue
+
         errors = validate_repo(repo)
         if errors:
             print(f"[{repo['name']}] - Problemas encontrados:")
